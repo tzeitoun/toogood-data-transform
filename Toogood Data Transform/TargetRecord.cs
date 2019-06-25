@@ -26,7 +26,7 @@ namespace Toogood_Data_Transform
         // Properties with auto-implemented accessors.
         // (Accessors can be implemented manually here to contain custom logic if required.)
         // Alternative to writing out a get..() and set..() method for each field.
-        public string Code { get; set; }
+        public string AccountCode { get; set; }
         public string Name { get; set; }
         public AccountType Type { get; set; }
         public DateTime OpenDate { get; set; }
@@ -37,7 +37,7 @@ namespace Toogood_Data_Transform
         /// </summary>
         public AccountRecord()
         {
-            Code = "";
+            AccountCode = "";
             Name = "";
             Type = AccountType.Unknown;
             OpenDate = DateTime.MinValue;
@@ -60,7 +60,7 @@ namespace Toogood_Data_Transform
             CurrencyType currency
             )
         {
-            this.Code = accountCode;
+            this.AccountCode = accountCode;
             this.Name = name;
             this.Type = type;
             this.OpenDate = openDate;
@@ -73,11 +73,12 @@ namespace Toogood_Data_Transform
         /// <returns>The record in the standard format as a string.</returns>
         public string getRecord()
         {
-            string record = Code
-                + "\t" + Name
-                + "\t" + Type
-                + "\t" + OpenDate
-                + "\t" + Currency
+            string separator = ",";  // could be \t for tab delimited, etc.
+            string record = AccountCode
+                + separator + Name
+                + separator + Type
+                + separator + ((OpenDate > DateTime.MinValue) ? OpenDate.ToShortDateString() : "")
+                + separator + Currency 
                 ;
             return record;
         }

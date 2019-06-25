@@ -49,13 +49,15 @@ namespace Toogood_Data_Transform
              */
 
             // setup for generating records below
-            int accountTypeLength = Enum.GetNames(typeof(AccountType)).Length;
-            int currencyTypeLength = Enum.GetNames(typeof(CurrencyType)).Length;
+            int accountTypeCount = Enum.GetNames(typeof(AccountType)).Length - 1; // subtracting 1 due to item 0 being the "unknown" type
+            int currencyTypeCount = Enum.GetNames(typeof(CurrencyType)).Length - 1;
             DateTime startDate = DateTime.Now;
 
             // Read and parse CSV data here...  (Actually generate pretend records)
             for (int i = 0; i < recordsCount; i++)
             {
+                int i1 = i + 1;  // "one-based" index
+
                 // "Read" from file...
                 string fileRecord;
 
@@ -64,18 +66,19 @@ namespace Toogood_Data_Transform
                     fileRecord =
                         (i + 1) * 100 + "|AbcCode"
                         + "," + "My Account " + i
-                        + "," + (i % accountTypeLength)
+                        + "," + (i1 % accountTypeCount)
                         + "," + startDate.AddDays(i)
-                        + "," + ((i % currencyTypeLength) == 1 ? "US" : "CD")
+                        + "," + ((i1 % currencyTypeCount) == 1 ? "US" : "CD")
                         ;
                 }
                 else if (inputFileType == InputFileType.Type2)
                 {
                     fileRecord =
-                        "My Account " + i
-                        + "," + Enum.GetName(typeof(AccountType), (AccountType)(i % accountTypeLength))
-                        + "," + ((i % currencyTypeLength) == 1 ? "U" : "C")
-                        + "," + ((i % 3) == 1 ? startDate.AddDays(i).ToShortDateString() : "")
+                        "My Account " + i  // Name
+                        + "," + Enum.GetName(typeof(AccountType), (AccountType)(i % accountTypeCount))  // Type
+                        + "," + ((i1 % currencyTypeCount) == 1 ? "U" : "C")  // Currency
+                        + "," + "CustCode" + i  // Custodian Code
+                        //+ "," + ((i1 % 3) == 1 ? startDate.AddDays(i).ToShortDateString() : "")  // Date, optional, every 3rd record
                         ;
                 }
                 else

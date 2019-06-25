@@ -30,6 +30,10 @@ namespace Toogood_Data_Transform
         {
             TargetRecords = new List<AccountRecord>();
 
+            //if (FileType == InputFileType.Type1)
+            //{
+//                transformType1(fileReader, TargetRecords);
+
             for (int i = 0; i < 10; i++)
             {
                 AccountRecord targetRecord = new AccountRecord();
@@ -41,7 +45,7 @@ namespace Toogood_Data_Transform
                     // Record 0 -- Identifier
                     string identifier = fields[0].ToString();  // eg. 123|AbcCode
                     string accountCode = identifier.Split('|')[1];  // eg. AbcCode
-                    targetRecord.Code = accountCode;
+                    targetRecord.AccountCode = accountCode;
 
                     // Record 1 -- Account Name
                     string name = fields[1].ToString();  // eg. My Account
@@ -78,19 +82,50 @@ namespace Toogood_Data_Transform
                 }
                 else if (FileType == InputFileType.Type2)
                 {
+                    // AccountCode
+                    string custodianCode = fields[3].ToString();  // Custodian Code
+                    targetRecord.AccountCode = custodianCode;
+
+                    // Name
+                    string name = fields[0].ToString();  // eg. My Account
+                    targetRecord.Name = name;
+
+                    // Type
+                    string accountInput = fields[1];
+                    AccountType accountType;
+                    if (Enum.TryParse(accountInput, out accountType))
+                    {
+                        targetRecord.Type = accountType;
+                    }
+
+                    // Open Date
+                    // not available in this file format
+
+                    // Currency
+                    string currencyInput = fields[2].ToString();
+                    if (currencyInput == "C")
+                    {
+                        targetRecord.Currency = CurrencyType.CAD;
+                    }
+                    else if (currencyInput == "U")
+                    {
+                        targetRecord.Currency = CurrencyType.USD;
+                    }
 
                 }
-                else
-                {
                 
-                }
-
                 TargetRecords.Add(targetRecord);
             }
 
             return TargetRecords;
         }
 
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        //private void transformType1(FileReader fileReader, List<AccountRecord> accountRecords)
+        //{
+
+        //}
     }
 }

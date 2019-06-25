@@ -15,6 +15,9 @@ namespace Toogood_Data_Transform
 
         static void Main(string[] args)
         {
+            // Testing
+            args = "test Type2".Split(' ');
+
             /* First argument from the command line would be the filename,
              * Second argument would be the file type.
              * Create the appropriate file reader.
