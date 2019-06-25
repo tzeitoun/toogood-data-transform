@@ -50,8 +50,12 @@ namespace Toogood_Data_Transform
             // Create file transformer
             FileTransform fileTransform = new FileTransform(fileReader);
 
-            // Transform records...
+            // Read File and Transform records...
+            fileReader.ReadFile();
             fileTransform.TransformRecords();
+
+            // Output a header here !
+            Console.WriteLine("AccountCode,Name,Type,Open Date,Currency");
 
             // Get the records in the standard format and write them to a new file
             List<AccountRecord> standardRecords = fileTransform.TargetRecords;
