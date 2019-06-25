@@ -8,15 +8,17 @@ namespace Toogood_Data_Transform
     class FileTransform
     {
         public List<AccountRecord> TargetRecords { private set; get; }
+
+        private FileReader fileReader;
         public InputFileType FileType { private set; get; }
         
         /// <summary>
-        /// Create a new File Transformer for ingesting files of the specified type.
+        /// Create a new File Transformer for ingesting files from the specified File Reader.
         /// </summary>
-        public FileTransform(InputFileType fileType)
+        public FileTransform(FileReader fileReader)
         {
-            FileType = fileType;
-            
+            FileType = fileReader.inputFileType;
+            this.fileReader = fileReader;
         }
 
         /// <summary>
@@ -24,7 +26,7 @@ namespace Toogood_Data_Transform
         /// </summary>
         /// <param name="records"></param>
         /// <returns></returns>
-        public List<AccountRecord> TransformRecords(string[] records)
+        public List<AccountRecord> TransformRecords()
         {
             TargetRecords = new List<AccountRecord>();
 
@@ -32,20 +34,22 @@ namespace Toogood_Data_Transform
             {
                 AccountRecord targetRecord = new AccountRecord();
 
+                string[] fields = fileReader.getFields(i);
+
                 if (FileType == InputFileType.Type1)
                 {
                     // Record 0 -- Identifier
-                    string identifier = records[i][0].ToString();  // eg. 123|AbcCode
+                    string identifier = fields[0].ToString();  // eg. 123|AbcCode
                     string accountCode = identifier.Split('|')[1];  // eg. AbcCode
                     targetRecord.Code = accountCode;
 
                     // Record 1 -- Account Name
-                    string name = records[i][1].ToString();  // eg. My Account
+                    string name = fields[1].ToString();  // eg. My Account
                     targetRecord.Name = name;
 
                     // Record 2 -- Account Type
                     int accountInput = 0; 
-                    Int32.TryParse(records[i][2].ToString(), out accountInput);  // eg. 1, 2, 3, 4
+                    Int32.TryParse(fields[2].ToString(), out accountInput);  // eg. 1, 2, 3, 4
                     if (accountInput >= 1 && accountInput <= 4)
                     {
                         targetRecord.Type = (AccountType)accountInput;
@@ -53,14 +57,14 @@ namespace Toogood_Data_Transform
 
                     // Record 3 -- Opened Date
                     DateTime openDate = DateTime.MinValue;  // DateTime is not nullable
-                    if (DateTime.TryParse(records[i][3].ToString(), out openDate))
+                    if (DateTime.TryParse(fields[3].ToString(), out openDate))
                     {
                         targetRecord.OpenDate = openDate;
                     }
 
                     // Record 4 -- Currency Type
                     CurrencyType currencyType = CurrencyType.Unknown;
-                    string currencyInput = records[i][4].ToString();
+                    string currencyInput = fields[4].ToString();
                     if (currencyInput == "CD")
                     {
                         currencyType = CurrencyType.CAD;
@@ -87,5 +91,6 @@ namespace Toogood_Data_Transform
             return TargetRecords;
         }
 
+        
     }
 }

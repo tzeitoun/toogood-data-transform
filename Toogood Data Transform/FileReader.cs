@@ -13,13 +13,13 @@ namespace Toogood_Data_Transform
 
     enum InputFileType
     {
-        Type1,
-        Type2
+        Type1 = 1,
+        Type2 = 2
     }
 
     class FileReader
     {
-        public InputFileType FileType { private set; get; }
+        public InputFileType inputFileType { private set; get; }
         string[][] recordFields;
 
         /// <summary>
@@ -29,16 +29,28 @@ namespace Toogood_Data_Transform
         /// <param name="inputFileType"></param>
         public FileReader(string filename, InputFileType inputFileType)
         {
-            FileType = inputFileType;
+            this.inputFileType = inputFileType;
+        }
+
+        /// <summary>
+        /// Read the file into the internal recordFields structure.
+        /// </summary>
+        public void ReadFile()
+        {
             int recordsCount = 10;
 
             recordFields = new string[recordsCount][];
-        
-            // Open CSV file...
 
+            // Open CSV file...
+            /* Specification states that column headers are present in this file. 
+             * We may want to verify them to ensure that the file is of the expected type.
+             * Either way, we must ensure we don't try to parse the header line as record data
+             * by reading it for verification or skipping it.
+             */
+
+            // setup for generating records below
             int accountTypeLength = Enum.GetNames(typeof(AccountType)).Length;
             int currencyTypeLength = Enum.GetNames(typeof(CurrencyType)).Length;
-
             DateTime startDate = DateTime.Now;
 
             // Read and parse CSV data here...  (Actually generate pretend records)
@@ -50,7 +62,7 @@ namespace Toogood_Data_Transform
                 if (inputFileType == InputFileType.Type1)
                 {
                     fileRecord =
-                        (i+1) * 100 + "|AbcCode"
+                        (i + 1) * 100 + "|AbcCode"
                         + "," + "My Account " + i
                         + "," + (i % accountTypeLength)
                         + "," + startDate.AddDays(i)
@@ -73,8 +85,16 @@ namespace Toogood_Data_Transform
                 // Parse and store into array
                 recordFields[i] = fileRecord.Split(',');
             }
+        }
 
-
+        /// <summary>
+        /// Get the fields of an individual record. 
+        /// </summary>
+        /// <param name="recordIndex"></param>
+        /// <returns></returns>
+        public string[] getFields(int recordIndex)
+        {
+            return recordFields[recordIndex];
         }
 
     }
