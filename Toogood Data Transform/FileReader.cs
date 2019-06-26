@@ -21,7 +21,8 @@ namespace Toogood_Data_Transform
     {
         public InputFileType inputFileType { private set; get; }
         string[][] recordFields;
-
+        public int recordsCount { private set; get; }
+        
         /// <summary>
         /// Create a new FileReader for the specified input file type.
         /// </summary>
@@ -35,7 +36,8 @@ namespace Toogood_Data_Transform
         /// <summary>
         /// Read the file into the internal recordFields structure.
         /// </summary>
-        public void ReadFile()
+        /// <returns>Number of records (excluding header) read from file.</returns>
+        public int ReadFile()
         {
             int recordsCount = 10;
 
@@ -88,6 +90,9 @@ namespace Toogood_Data_Transform
                 // Parse and store into array
                 recordFields[i] = fileRecord.Split(',');
             }
+
+            this.recordsCount = recordsCount;
+            return recordsCount;
         }
 
         /// <summary>

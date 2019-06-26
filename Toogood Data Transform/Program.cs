@@ -16,7 +16,7 @@ namespace Toogood_Data_Transform
         static void Main(string[] args)
         {
             // Testing
-            args = "test Type2".Split(' ');
+            //args = "test Type2".Split(' ');
 
             /* First argument from the command line would be the filename,
              * Second argument would be the file type.
@@ -47,14 +47,12 @@ namespace Toogood_Data_Transform
                 return;
             }
 
-            // Create file reader (will "read" file)
+            // Create file reader and "read" file
             FileReader fileReader = new FileReader(filename, inputFileType);
-
-            // Create file transformer
-            FileTransform fileTransform = new FileTransform(fileReader);
-
-            // Read File and Transform records...
             fileReader.ReadFile();
+
+            // Create file transformer and transform file's records
+            FileTransform fileTransform = new FileTransform(fileReader);
             fileTransform.TransformRecords();
 
             // Output a header here !

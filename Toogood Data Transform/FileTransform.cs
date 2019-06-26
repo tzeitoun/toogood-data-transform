@@ -30,11 +30,7 @@ namespace Toogood_Data_Transform
         {
             TargetRecords = new List<AccountRecord>();
 
-            //if (FileType == InputFileType.Type1)
-            //{
-//                transformType1(fileReader, TargetRecords);
-
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < fileReader.recordsCount; i++)
             {
                 AccountRecord targetRecord = new AccountRecord();
 
